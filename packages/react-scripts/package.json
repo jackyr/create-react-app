@@ -1,14 +1,14 @@
 {
-  "name": "react-scripts",
-  "version": "2.1.1",
+  "name": "@jackyr/react-scripts",
+  "version": "0.1.0-beta.1",
   "description": "Configuration and scripts for Create React App.",
-  "repository": "facebook/create-react-app",
+  "repository": "jackyr/create-react-app",
   "license": "MIT",
   "engines": {
     "node": ">=6"
   },
   "bugs": {
-    "url": "https://github.com/facebook/create-react-app/issues"
+    "url": "https://github.com/jackyr/create-react-app/issues"
   },
   "files": [
     "bin",
@@ -82,7 +82,9 @@
   "browserslist": [
     ">0.2%",
     "not dead",
-    "not ie <= 11",
-    "not op_mini all"
+    "not ie <= 9",
+    "not op_mini all",
+    "iOS >= 8",
+    "Android >= 4.4"
   ]
 }

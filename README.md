@@ -1,3 +1,16 @@
+# Forked from [facebook/create-react-app](https://github.com/facebook/create-react-app)
+Custom features:
+- Support older browsers by default. IE9+/IOS8+/Android4.4+
+([issues#5336](https://github.com/facebook/create-react-app/issues/5336))
+
+Usage:
+```sh
+npx create-react-app my-app --scripts-version=@jackyr/react-scripts
+# for typescript
+npx create-react-app my-app --scripts-version=@jackyr/react-scripts --typescript
+```
+
+
 # Create React App [![Build Status](https://travis-ci.org/facebook/create-react-app.svg?branch=master)](https://travis-ci.org/facebook/create-react-app) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/facebook/create-react-app/pulls) 
 
 Create React apps with no build configuration.
