@@ -49,6 +49,8 @@ const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
@@ -76,7 +78,7 @@ module.exports = function(webpackEnv) {
   const env = getClientEnvironment(publicUrl);
 
   // common function to get style loaders
-  const getStyleLoaders = (cssOptions, preProcessor) => {
+  const getStyleLoaders = (cssOptions, preProcessor, preProcessorOptions) => {
     const loaders = [
       isEnvDevelopment && require.resolve('style-loader'),
       isEnvProduction && {
@@ -115,9 +117,9 @@ module.exports = function(webpackEnv) {
     if (preProcessor) {
       loaders.push({
         loader: require.resolve(preProcessor),
-        options: {
+        options: Object.assign({
           sourceMap: isEnvProduction && shouldUseSourceMap,
-        },
+        }, preProcessorOptions),
       });
     }
     return loaders;
@@ -368,7 +370,7 @@ module.exports = function(webpackEnv) {
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
                     'react-dev-utils',
-                    'react-scripts',
+                    '@jackyr/react-scripts',
                   ]
                 ),
                 // @remove-on-eject-end
@@ -420,7 +422,7 @@ module.exports = function(webpackEnv) {
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
                     'react-dev-utils',
-                    'react-scripts',
+                    '@jackyr/react-scripts',
                   ]
                 ),
                 // @remove-on-eject-end
@@ -493,6 +495,38 @@ module.exports = function(webpackEnv) {
                   getLocalIdent: getCSSModuleLocalIdent,
                 },
                 'sass-loader'
+              ),
+            },
+            {
+              test: lessRegex,
+              exclude: lessModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 2,
+                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                },
+                'less-loader',
+                {
+                  javascriptEnabled: true,
+                  modifyVars: fs.existsSync(paths.appLessVars) ? require(paths.appLessVars) : {},
+                }
+              ),
+              sideEffects: true,
+            },
+            {
+              test: lessModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 2,
+                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                  modules: true,
+                  getLocalIdent: getCSSModuleLocalIdent,
+                },
+                'less-loader',
+                {
+                  javascriptEnabled: true,
+                  modifyVars: fs.existsSync(paths.appLessVars) ? require(paths.appLessVars) : {},
+                }
               ),
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.

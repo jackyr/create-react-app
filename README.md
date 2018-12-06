@@ -2,6 +2,7 @@
 Custom features:
 - Support older browsers by default. IE9+/IOS8+/Android4.4+
 ([issues#5336](https://github.com/facebook/create-react-app/issues/5336))
+- Support less/less module by default. Less vars can be defined in lessVars.json.
 
 Usage:
 ```sh
