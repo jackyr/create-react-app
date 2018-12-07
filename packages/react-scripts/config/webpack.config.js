@@ -125,7 +125,17 @@ module.exports = function(webpackEnv) {
     return loaders;
   };
 
-  return {
+  const getImportPlugins = (libraryName) => [
+    require.resolve('babel-plugin-import'),
+    {
+      libraryName,
+      libraryDirectory: "es",
+      style: true,
+    },
+    libraryName,
+  ];
+
+  return (fs.existsSync(paths.appConfigOverrides) ? require(paths.appConfigOverrides) : v => v)({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     // Stop compilation early in production
     bail: isEnvProduction,
@@ -386,6 +396,9 @@ module.exports = function(webpackEnv) {
                       },
                     },
                   ],
+                  getImportPlugins('antd'),
+                  getImportPlugins('antd-mobile'),
+                  getImportPlugins('@dr/dr-component-mobile'),
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -689,5 +702,5 @@ module.exports = function(webpackEnv) {
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
-  };
+  }, webpackEnv);
 };
