@@ -180,6 +180,19 @@ module.exports = function(
       })
     );
     fs.unlinkSync(templateDependenciesPath);
+
+    if (isReactInstalled(appPackage) && !template) {
+      console.log(`Installing ${Object.keys(templateDependencies).reduce(
+        (p, c, i, a) => p += (i !== 0 ? (i === a.length -1 ? ' and ' : ', ') : '') + chalk.cyan(c), ''
+      )}...`);
+      console.log();
+
+      const proc = spawn.sync(command, args, { stdio: 'inherit' });
+      if (proc.status !== 0) {
+        console.error(`\`${command} ${args.join(' ')}\` failed`);
+        return;
+      }
+    }
   }
 
   // Install react and react-dom for backward compatibility with old CRA cli
