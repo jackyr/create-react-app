@@ -4,7 +4,7 @@
  * @return config
  */
 
-const webpack = require('webpack');
+// const webpack = require('webpack');
 
 module.exports = function override(config, env) {
   /* Example: Add a webpack plugin */

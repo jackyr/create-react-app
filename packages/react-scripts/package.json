@@ -1,6 +1,6 @@
 {
   "name": "@jackyr/react-scripts",
-  "version": "0.1.0-beta.10",
+  "version": "0.1.0",
   "description": "Configuration and scripts for Create React App.",
   "repository": "jackyr/create-react-app",
   "license": "MIT",
