@@ -1,4 +1,5 @@
-# Forked from [facebook/create-react-app](https://github.com/facebook/create-react-app)
+# @jackyr/react-scripts [![npm](https://img.shields.io/npm/v/@jackyr/react-scripts.svg?style=flat-square)](https://www.npmjs.com/package/@jackyr/react-scripts)
+
 Custom features:
 - Support older browsers by default. IE9+/IOS8+/Android4.4+
 ([issues#5336](https://github.com/facebook/create-react-app/issues/5336))
