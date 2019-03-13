@@ -49,6 +49,8 @@ const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
@@ -76,7 +78,7 @@ module.exports = function(webpackEnv) {
   const env = getClientEnvironment(publicUrl);
 
   // common function to get style loaders
-  const getStyleLoaders = (cssOptions, preProcessor) => {
+  const getStyleLoaders = (cssOptions, preProcessor, preProcessorOptions) => {
     const loaders = [
       isEnvDevelopment && require.resolve('style-loader'),
       isEnvProduction && {
@@ -115,15 +117,25 @@ module.exports = function(webpackEnv) {
     if (preProcessor) {
       loaders.push({
         loader: require.resolve(preProcessor),
-        options: {
+        options: Object.assign({
           sourceMap: isEnvProduction && shouldUseSourceMap,
-        },
+        }, preProcessorOptions),
       });
     }
     return loaders;
   };
 
-  return {
+  const getImportPlugins = (libraryName) => [
+    require.resolve('babel-plugin-import'),
+    {
+      libraryName,
+      libraryDirectory: "es",
+      style: true,
+    },
+    libraryName,
+  ];
+
+  return (fs.existsSync(paths.appConfigOverrides) ? require(paths.appConfigOverrides) : v => v)({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     // Stop compilation early in production
     bail: isEnvProduction,
@@ -135,6 +147,7 @@ module.exports = function(webpackEnv) {
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry: [
+      fs.existsSync(paths.appPolyfill) && paths.appPolyfill,
       // Include an alternative client for WebpackDevServer. A client's job is to
       // connect to WebpackDevServer by a socket and get notified about changes.
       // When you save a file, the client will either apply hot updates (in case
@@ -367,7 +380,7 @@ module.exports = function(webpackEnv) {
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
                     'react-dev-utils',
-                    'react-scripts',
+                    '@jackyr/react-scripts',
                   ]
                 ),
                 // @remove-on-eject-end
@@ -382,6 +395,9 @@ module.exports = function(webpackEnv) {
                       },
                     },
                   ],
+                  getImportPlugins('antd'),
+                  getImportPlugins('antd-mobile'),
+                  getImportPlugins('@dr/dr-component-mobile'),
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -418,7 +434,7 @@ module.exports = function(webpackEnv) {
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
                     'react-dev-utils',
-                    'react-scripts',
+                    '@jackyr/react-scripts',
                   ]
                 ),
                 // @remove-on-eject-end
@@ -491,6 +507,38 @@ module.exports = function(webpackEnv) {
                   getLocalIdent: getCSSModuleLocalIdent,
                 },
                 'sass-loader'
+              ),
+            },
+            {
+              test: lessRegex,
+              exclude: lessModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 2,
+                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                },
+                'less-loader',
+                {
+                  javascriptEnabled: true,
+                  modifyVars: fs.existsSync(paths.appLessVars) ? require(paths.appLessVars) : {},
+                }
+              ),
+              sideEffects: true,
+            },
+            {
+              test: lessModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 2,
+                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                  modules: true,
+                  getLocalIdent: getCSSModuleLocalIdent,
+                },
+                'less-loader',
+                {
+                  javascriptEnabled: true,
+                  modifyVars: fs.existsSync(paths.appLessVars) ? require(paths.appLessVars) : {},
+                }
               ),
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -648,5 +696,5 @@ module.exports = function(webpackEnv) {
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
-  };
+  }, webpackEnv);
 };

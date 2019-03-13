@@ -1,3 +1,20 @@
+# @jackyr/react-scripts [![npm](https://img.shields.io/npm/v/@jackyr/react-scripts.svg?style=flat-square)](https://www.npmjs.com/package/@jackyr/react-scripts)
+
+Custom features:
+- Support older browsers by default. IE9+/IOS8+/Android4.4+
+([issues#5336](https://github.com/facebook/create-react-app/issues/5336))
+- Support less/less module by default. Less vars can be defined in lessVars.json.
+- Support react-router by default, and with a better project directory structure.
+- Built-in [babel-plugin-import](https://github.com/ant-design/babel-plugin-import) for [antd](https://ant.design/) and [antd-mobile](https://mobile.ant.design/).
+- Provide a simple way to modify webpack config through config-overrides.js.
+
+Usage:
+```sh
+npx create-react-app my-app --scripts-version=@jackyr/react-scripts
+# for typescript
+npx create-react-app my-app --scripts-version=@jackyr/react-scripts --typescript
+```
+
 # Create React App [![Build Status](https://travis-ci.org/facebook/create-react-app.svg?branch=master)](https://travis-ci.org/facebook/create-react-app) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/facebook/create-react-app/pulls)
 
 Create React apps with no build configuration.

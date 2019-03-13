@@ -19,7 +19,7 @@ const path = require('path');
 const chalk = require('react-dev-utils/chalk');
 const execSync = require('child_process').execSync;
 const spawn = require('react-dev-utils/crossSpawn');
-const { defaultBrowsers } = require('react-dev-utils/browsersHelper');
+// const { defaultBrowsers } = require('react-dev-utils/browsersHelper');
 const os = require('os');
 const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
 
@@ -85,6 +85,7 @@ module.exports = function(
   const ownPath = path.dirname(
     require.resolve(path.join(__dirname, '..', 'package.json'))
   );
+  const ownPackage = require(path.join(ownPath, 'package.json'));
   const appPackage = require(path.join(appPath, 'package.json'));
   const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
 
@@ -107,7 +108,7 @@ module.exports = function(
   };
 
   // Setup the browsers list
-  appPackage.browserslist = defaultBrowsers;
+  appPackage.browserslist = ownPackage.browserslist;
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
@@ -179,6 +180,19 @@ module.exports = function(
       })
     );
     fs.unlinkSync(templateDependenciesPath);
+
+    if (isReactInstalled(appPackage) && !template) {
+      console.log(`Installing ${Object.keys(templateDependencies).reduce(
+        (p, c, i, a) => p += (i !== 0 ? (i === a.length -1 ? ' and ' : ', ') : '') + chalk.cyan(c), ''
+      )}...`);
+      console.log();
+
+      const proc = spawn.sync(command, args, { stdio: 'inherit' });
+      if (proc.status !== 0) {
+        console.error(`\`${command} ${args.join(' ')}\` failed`);
+        return;
+      }
+    }
   }
 
   // Install react and react-dom for backward compatibility with old CRA cli
